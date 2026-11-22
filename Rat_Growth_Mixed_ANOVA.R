@@ -92,7 +92,7 @@ rats %>%
 
 
 ## ----outlier-detection-------------------------------------------------------------
-# Identify univariate outliers per Treatment x Time cell (mild and extreme)
+# Identify univariate extreme outliers
 rats %>%
   group_by(trt, time) %>%
   identify_outliers(y)
@@ -147,12 +147,13 @@ rats %>%
   get_anova_table() %>%
   knitr::kable(digits = 3)
 
-# Tukey HSD pairwise comparisons per week (all 15 rows across 5 weeks x 3 pairs)
+# Tukey HSD pairwise comparisons per week (full labels, all 15 rows)
 rats %>%
   group_by(time) %>%
   tukey_hsd(y ~ trt) %>%
   select(time, group1, group2, estimate, conf.low, conf.high, p.adj, p.adj.signif) %>%
   knitr::kable(digits = 3)
+
 
 
 ## ----simple-main-time--------------------------------------------------------------
@@ -162,7 +163,7 @@ rats %>%
   anova_test(dv = y, wid = id, within = time) %>%
   get_anova_table()
 
-# Paired t-tests between weeks with Holm correction (adjusted within each treatment group)
+# Paired t-tests between weeks with Holm correction
 rats %>%
   group_by(trt) %>%
   pairwise_t_test(
@@ -170,5 +171,6 @@ rats %>%
     paired = TRUE,
     p.adjust.method = "holm"
   ) %>%
-  knitr::kable(digits = 3)
+  knitr::kable()
+
 
